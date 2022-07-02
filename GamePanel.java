@@ -14,18 +14,18 @@ public class GamePanel extends JPanel implements ActionListener {
 	
 	static final int SCREEN_WIDTH = 600;
 	static final int SCREEN_HEIGHT = 600;
-	static final int UNIT_SIZE = 25;         //ilanin olcusu, yeni obyektin
-	static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT)/UNIT_SIZE;    //oyundaki objektlerin sayi
-	static final int DELAY = 85;  //gecikme, oyunun sureti
-	final int x[] = new int[GAME_UNITS];  //x koordinati oyundaki object sayi qeder
+	static final int UNIT_SIZE = 25;         
+	static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT)/UNIT_SIZE;    
+	static final int DELAY = 85;  
+	final int x[] = new int[GAME_UNITS];  
 	final int y[] = new int[GAME_UNITS];
-	int bodyParts = 6;   //ilanin bedeninin hisselerinin sayi
-	int applesEaten;     //yeyilen alma sayi, initial 0
-	int appleX;          //X koordinatindaki alma sayi
-	int appleY;          //Y koordinatindaki alma sayi
-	char direction = 'R';     //ilanin basladigi istiqamet yux-asagi-sag-sol
+	int bodyParts = 6;   
+	int applesEaten;     
+	int appleX;        
+	int appleY;          
+	char direction = 'R';    
 	boolean running = false;
-	Timer timer;        //Timer funksiyasi
+	Timer timer;      
 	Random random;
 	
 
@@ -34,14 +34,14 @@ public class GamePanel extends JPanel implements ActionListener {
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.black);
 		this.setFocusable(true);
-		this.addKeyListener(new MyKeyAdapter());   //klaviatura dinleyicisi
-		startGame();        //bu yuxaridaki sey-suylerden sonra game baslayir
+		this.addKeyListener(new MyKeyAdapter());  
+		startGame();      
 	}
 	
 	public void startGame() {
-		newApple();     //yeni alma yaranmaqla oyun start edir
+		newApple();   
 		running = true;
-		timer = new Timer(DELAY,this);       //oyun suretini de baslangicda verdik
+		timer = new Timer(DELAY,this);      
 		timer.start();
 	}
 	public void paintComponent(Graphics g) {
@@ -51,41 +51,35 @@ public class GamePanel extends JPanel implements ActionListener {
 	public void draw(Graphics g) {
 		if (running) {
 			
-			//grid layut kimi xetler ederek gorunumu rahatlasdiririq, ancaq optionaldir
-		/*	for (int i = 0; i < SCREEN_HEIGHT/UNIT_SIZE; i++) {
-				g.drawLine(i * UNIT_SIZE, 0, i * UNIT_SIZE, SCREEN_HEIGHT);  //uzununa xetler
-				g.drawLine(0, i * UNIT_SIZE, SCREEN_WIDTH, i * UNIT_SIZE);  //enine xetler
-			//unit_size boyuk olsa yaranmir kicik kvadrat olculeri de boyuyur
-			}		
-	  	*/		g.setColor(Color.red);         //alma rengi
-				g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);     //almanin boyukluyu
-			//ilanin bedenini ve basini qurma
+				g.setColor(Color.red);         
+				g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);    
+		
 			for (int i = 0; i < bodyParts; i++) {
 				if (i == 0) {
-					g.setColor(Color.green); //ilanin basi
+					g.setColor(Color.green); 
 					g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
-			}   else {       //ilanin bedeni
-					//g.setColor(new Color(45, 180, 0));   //RGB color
+			}   else {       
+					
 					g.setColor(new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
 					g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
 			}
 		}	
-			//score paneli
+		
 			g.setColor(Color.orange);
 			g.setFont(new Font("Monospaced", Font.BOLD, 40));
 			FontMetrics metrics = getFontMetrics(g.getFont());
-			g.drawString("Xal:" + applesEaten, (SCREEN_WIDTH-metrics.stringWidth("Xal: "+applesEaten )) / 2, g.getFont().getSize());
+			g.drawString("Score:" + applesEaten, (SCREEN_WIDTH-metrics.stringWidth("Score: "+applesEaten )) / 2, g.getFont().getSize());
 	}
 		else {
-			gameOver(g);       //oz etdiyimiz method
+			gameOver(g);       
 		}
 	}
 	public void newApple() {
-		//random alma cixan yerleri gosterecek
-		appleX = random.nextInt((int)SCREEN_WIDTH / UNIT_SIZE) * UNIT_SIZE;  //x uzre random apple yeri
-		appleY = random.nextInt((int)SCREEN_HEIGHT / UNIT_SIZE) * UNIT_SIZE;  //y uzre random apple yeri
+		
+		appleX = random.nextInt((int)SCREEN_WIDTH / UNIT_SIZE) * UNIT_SIZE; 
+		appleY = random.nextInt((int)SCREEN_HEIGHT / UNIT_SIZE) * UNIT_SIZE;  
 	}
-	public void move() {   //ilanin hereketi  //bodyPart-ilanBedenHisseSayi
+	public void move() {   
 		for (int i = bodyParts; i > 0; i--) {
 			x[i] = x[i - 1];
 			y[i] = y[i - 1];
@@ -106,34 +100,34 @@ public class GamePanel extends JPanel implements ActionListener {
 		
 		}
 	}
-	public void checkApple() {    //random apple
+	public void checkApple() {    
 		if ((x[0] == appleX) && (y[0] == appleY)) {
-			bodyParts++;      //bedenin olcusu artir
-			applesEaten++;   //yeyilen alma sayi artir
-			newApple();       //yeniden alma yaranir
+			bodyParts++;     
+			applesEaten++;
+			newApple();      
 		}
 		
 	}
-	public void checkCollisions() {   //carpisma yoxlayan
-		//ilanin basi ayagiyla toqqusue oyun bitir
+	public void checkCollisions() {   
+		
 		for (int i = bodyParts; i > 0; i--) {
-			if ((x[0] == x[i]) && ((y[0] == y[i]))) {   //x ilan basi, y ilan ayagi
+			if ((x[0] == x[i]) && ((y[0] == y[i]))) {   
 				running = false;
 			}
 		}
-		//ilan sol divara toxunsa
+		
 		if (x[0] < 0) {
 			running = false;
 		}
-		//ilan sag divara toxunsa
+		
 		if (x[0] > SCREEN_WIDTH) {
 			running = false;
 		}
-		//ilan basi yuxari toxunsa
+		
 		if (y[0] < 0) {
 			running = false;
 		}
-		//ilan basi asagi toxunarsa
+	
 		if (y[0] > SCREEN_HEIGHT) {
 			running = false;
 		}
@@ -143,16 +137,16 @@ public class GamePanel extends JPanel implements ActionListener {
 		
 	}
 	public void gameOver(Graphics g) {
-		//Sonda uduzanda score'u gosteren
+		
 		g.setColor(Color.orange);
 		g.setFont(new Font("Ink Free", Font.BOLD, 40));
 		FontMetrics metrics = getFontMetrics(g.getFont());
-		g.drawString("Toplanan xal:" + applesEaten, (SCREEN_WIDTH-metrics.stringWidth("Toplanan xal: "+applesEaten )) / 2, g.getFont().getSize());
-		//GameOver text
+		g.drawString("Toplanan xal:" + applesEaten, (SCREEN_WIDTH-metrics.stringWidth("Your Total Score: "+applesEaten )) / 2, g.getFont().getSize());
+		
 		g.setColor(Color.red);
 		g.setFont(new Font("Ink Free", Font.BOLD, 50));
 		FontMetrics metrics2 = getFontMetrics(g.getFont());
-		g.drawString("Oyun bitdi brat :(", (SCREEN_WIDTH-metrics2.stringWidth("Oyun Bitdi brat :(")) / 2, SCREEN_HEIGHT/2);
+		g.drawString("Game Over bro :(", (SCREEN_WIDTH-metrics2.stringWidth("Game Over bro :(")) / 2, SCREEN_HEIGHT/2);
 	}
 	
 	
@@ -164,30 +158,30 @@ public class GamePanel extends JPanel implements ActionListener {
 			 checkApple();
 			 checkCollisions();
 		}
-		repaint();    //java oz methodu
+		repaint();   
 		
 	}
-	//inner class   //klaviatura ucun
+
 	public class MyKeyAdapter extends KeyAdapter {
 		@Override  
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
-		case KeyEvent.VK_LEFT:            //sol duyme
+		case KeyEvent.VK_LEFT:            
 			if (direction != 'R') {
 				direction = 'L';
 			}
 			break;
-		case KeyEvent.VK_RIGHT:            //sag duyme
+		case KeyEvent.VK_RIGHT:           
 			if (direction != 'L') {
 				direction = 'R';
 			}
 			break;
-		case KeyEvent.VK_UP:            //yuxari duyme
+		case KeyEvent.VK_UP:        
 			if (direction != 'D') {
 				direction = 'U';
 			}
 			break;
-		case KeyEvent.VK_DOWN:            //asagi duyme
+		case KeyEvent.VK_DOWN:           
 			if (direction != 'U') {
 				direction = 'D';
 			}
